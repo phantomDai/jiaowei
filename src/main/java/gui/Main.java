@@ -1,5 +1,13 @@
 package gui;
 
+import utl.*;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * gui界面
  * @author phantom
@@ -70,7 +78,23 @@ public class Main extends javax.swing.JFrame {
         guiguolianyitongji = new javax.swing.JLabel();
         zhishilianyitongji = new javax.swing.JLabel();
 
+        /**一下部分是对GUI窗体作一些简单的修改***************************************/
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        ImageIcon logo = new ImageIcon("src/image/logo.png");
+        this.setIconImage(logo.getImage());
+        setTitle("北京市高校党外人员信息统计");
+//        Toolkit tl = Toolkit.getDefaultToolkit();
+//////        Dimension d = tl.getScreenSize();
+//////        double ScreenHeigth = d.getHeight();
+//////        double ScreenWidth = d.getWidth();
+//////        int FrameWidth = this.getWidth();
+//////        int FrameHeigth = this.getHeight();
+//////        int Higth = (int)(ScreenHeigth - FrameHeigth)/2;
+//////        int Width = (int)(ScreenWidth - FrameWidth)/2;
+//////        this.setLocation(Width, Higth);
+        /**********************************************************************/
+
 
         stepsFrame.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -155,8 +179,19 @@ public class Main extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setText("刷新");
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                updateActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("查询");
+        jButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchActionPerformed(e);
+            }
+        });
 
         jButton3.setText("导出");
 
@@ -167,19 +202,19 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(buttonFrameLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(nianduLabel)
-                                .addGap(41, 41, 41)
+                                .addGap(20, 20, 20)
                                 .addComponent(nianComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(68, 68, 68)
+                                .addGap(100, 100, 100)
                                 .addComponent(jLabel2)
-                                .addGap(32, 32, 32)
+                                .addGap(20, 20, 20)
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(59, 59, 59)
+                                .addGap(100, 100, 100)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(80, 80, 80)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(72, 72, 72)
+                                .addGap(80, 80, 80)
                                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(25, 25, 25))
+                                .addGap(80, 80, 80))
         );
         buttonFrameLayout.setVerticalGroup(
                 buttonFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,16 +234,18 @@ public class Main extends javax.swing.JFrame {
         contentFrame.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         zuzhifazhanTable.setFont(new java.awt.Font("宋体", 0, 22)); // NOI18N
-
+        tongzhanjTable.setFont(new java.awt.Font("宋体", 0, 16));
+        tongzhanjTable.setRowHeight(50);
+        tongzhanjTable.setRowMargin(1);
         tongzhanjTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
-                        {"总计", "--", null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null}
+                        {"总计", null, null, null, null, null},
+                        {null,null, null, null, null, null},
+                        {null,null, null, null, null, null},
+                        {null,null, null, null, null, null}
                 },
                 new String [] {
-                        "高校", "是否设置单独统战部门", "专职干部人数", "党外代表数量", "高层次党外代表数量"
+                        "序号","高校", "是否设置单独统战部门", "专职干部人数", "党外代表数量", "高层次党外代表数量"
                 }
         ));
         jScrollPane1.setViewportView(tongzhanjTable);
@@ -226,6 +263,16 @@ public class Main extends javax.swing.JFrame {
 
         zuzhifazhanTable.addTab("统战工作", jPanel1);
 
+
+        jScrollPane2.setViewportView(jujiTable);
+
+        jLabel9.setFont(new java.awt.Font("宋体", 0, 24)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel9.setText("总计：");
+
+        jujiTable.setFont(new java.awt.Font("宋体", 0, 16));
+        jujiTable.setRowHeight(50);
+        jujiTable.setRowMargin(1);
         jujiTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null, null, null, null, null},
@@ -237,12 +284,8 @@ public class Main extends javax.swing.JFrame {
                         "序号", "姓名", "单位", "现任职务", "出生年月", "籍贯", "党派", "学历", "职称", "任职时间"
                 }
         ));
+
         jScrollPane2.setViewportView(jujiTable);
-
-        jLabel9.setFont(new java.awt.Font("宋体", 0, 24)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(255, 51, 51));
-        jLabel9.setText("总计：");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -250,7 +293,7 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1151, Short.MAX_VALUE)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(103, 103, 103))
         );
         jPanel2Layout.setVerticalGroup(
@@ -264,20 +307,18 @@ public class Main extends javax.swing.JFrame {
 
         zuzhifazhanTable.addTab("局级干部", jPanel2);
 
-        gaojizhishiTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {"29岁以下", null, null, null, null, null, null, null, null, null, null, null},
-                        {"30-39岁", null, null, null, null, null, null, null, null, null, null, null},
-                        {"40-49岁", null, null, null, null, null, null, null, null, null, null, null},
-                        {"50-59岁", null, null, null, null, null, null, null, null, null, null, null},
-                        {"60岁以上", "", null, null, null, null, null, null, null, null, null, null},
-                        {null, "", null, null, null, null, null, null, null, null, null, null}
-                },
-                new String [] {
-                        "年龄段", "党外高级知识分子总数", "党外正高(男)", "党外正高(女)", "党外副高(男)", "党外副高(女)", "高级知识分子总数", "高级知识分子(男)", "高级知识分子(女)", "教职工总数", "教职工(男)", "教职工(女)"
+        gaojizhishiTable.setFont(new java.awt.Font("宋体", 0, 16));
+        gaojizhishiTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        gaojizhishiTable.setRowHeight(30);
+        gaojizhishiTable.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                        "年龄段", "党外高级知识分子总数", "党外正高（男）", "党外正高（女）", "党外副高（男）", "党外副高（女）", "高级知识分子总数", "高级知识分子（男）", "高级知识分子（女）", "教职工总数", "教职工（男）", "教职工（女）"
                 }
         ));
-        gaojizhishiTable.setRowHeight(30);
+        for (int i = 0; i < Constant.ZHISHI; i++) {
+            gaojizhishiTable.getColumnModel().getColumn(i).setPreferredWidth(130);
+        }
         jScrollPane4.setViewportView(gaojizhishiTable);
 
         jLabel10.setFont(new java.awt.Font("宋体", 0, 24)); // NOI18N
@@ -303,8 +344,12 @@ public class Main extends javax.swing.JFrame {
                                 .addGap(0, 456, Short.MAX_VALUE))
         );
 
+
         zuzhifazhanTable.addTab("高级知识分子", jPanel3);
 
+        chengyuanTable.setFont(new java.awt.Font("宋体", 0, 16));
+        chengyuanTable.setRowHeight(30);
+        chengyuanTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         chengyuanTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {"民革", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
@@ -321,6 +366,10 @@ public class Main extends javax.swing.JFrame {
                         "党派名称", "成员（总数）", "成员（男）", "成员（女）", "职称（高级）", "职称（中级）", "职称（初级）", "职称（无）", "年龄（29以下）", "年龄（30-39）", "年龄（40-49）", "年龄（50-59）", "年龄（60岁以上）", "离退休", "交叉党员（总数）", "交叉党员（在职）", "党派市委委员以上", "党派中央委员以上", "担任处级职务", "担任局级以上职务", "变化情况（调入）", "变化情况（调出）", "变化情况（退出）"
                 }
         ));
+        chengyuanTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+//        for (int i = 0; i < Constant.ChengYuan + 1; i++) {
+//            chengyuanTable.getColumnModel().getColumn(i).setPreferredWidth(130);
+//        }
         jScrollPane3.setViewportView(chengyuanTable);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -332,7 +381,7 @@ public class Main extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 304, Short.MAX_VALUE))
         );
 
@@ -518,6 +567,36 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>
+
+    /**监听事件的方法*/
+    private void updateActionPerformed(ActionEvent evt){
+        GetYears getYears = new GetYears();
+        GetOrganization go = new GetOrganization();
+        nianComboBox.setModel(new DefaultComboBoxModel<String>(getYears.getYears()));
+        jComboBox1.setModel(new DefaultComboBoxModel<>(go.getOrganizations()));
+    }
+    private void searchActionPerformed(ActionEvent e) {
+        String selectedYear = (String) nianComboBox.getSelectedItem();
+        String selectedOrganization = (String) jComboBox1.getSelectedItem();
+        ParseTongZhan parseTongZhan = new ParseTongZhan(selectedYear, selectedOrganization);
+        ParseJuji parseJuji = new ParseJuji(selectedYear,selectedOrganization);
+        ParseZhiShi parseZhiShi = new ParseZhiShi(selectedYear,selectedOrganization);
+
+        //统战
+        tongzhanjTable.setModel(new DefaultTableModel(parseTongZhan.getData(), Constant.titleTongZhan));
+
+        //局级
+        jujiTable.setModel(new DefaultTableModel(parseJuji.getData(), Constant.titileJuJi));
+
+        //高级知识
+        gaojizhishiTable.setModel(new DefaultTableModel(parseZhiShi.getData(), Constant.TONGZHANCOL));
+
+    }
+
+
+
+
+
 
     /**
      * @param args the command line arguments
