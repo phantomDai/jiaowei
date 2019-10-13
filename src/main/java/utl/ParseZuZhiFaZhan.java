@@ -1,9 +1,6 @@
 package utl;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +40,24 @@ public class ParseZuZhiFaZhan {
         String parentDir = new GetYears().getPath() + separator +
                 this.year + separator + organization;
         //获得操作的对象
-        Workbook wb = GetWorkBook.getWorkBook(this.year, this.organization, getTargetFileName(parentDir));
+
+        String name = getTargetFileName(parentDir);
+
+        String path = parentDir + separator + name;
+        File file = new File(path);
+        if(!file.exists()){
+            Bin bin = new Bin();
+            for (int i = 0; i < Constant.ZuZhiFaZhan; i++) {
+                bin.add("0");
+            }
+            dataList.add(bin);
+            updateData(dataList);
+            return;
+        }
+
+        Workbook wb = GetWorkBook.getWorkBook(this.year, this.organization, name);
+        FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
+
         //以上代码是为了获取每一个目标文件的操作对象，接下来读取每一个文件中的内容，存入文件中
         Sheet tempSheet = wb.getSheetAt(0);
         //获取统战工作表中需要统计的信息所在的行
@@ -53,11 +67,16 @@ public class ParseZuZhiFaZhan {
             if (i != 14){
                 for (int j = 0; j < Constant.ZuZhiFaZhan; j++) {
                     if (j >= 1 ){
+                        int tempType = temp.getCell(j).getCellType();
+                        System.out.println(tempType);
                         if (temp.getCell(j).equals(null) || temp.getCell(j).equals("")){
                             bin.add(String.valueOf(0));
                         }else {
                             if (temp.getCell(j).getCellType() == Cell.CELL_TYPE_NUMERIC){
                                 bin.add(String.valueOf((int) temp.getCell(j).getNumericCellValue()));
+                            }else if (temp.getCell(j).getCellType() == Cell.CELL_TYPE_FORMULA){
+                                CellValue cellValue = evaluator.evaluate(temp.getCell(j));
+                                bin.add(cellValue.toString());
                             }else {
                                 bin.add(temp.getCell(j).toString());
                             }
@@ -246,7 +265,7 @@ public class ParseZuZhiFaZhan {
      * @return 指定的文件的名字
      */
     private String getTargetFileName(String parentDir) {
-        String fileName = "";
+        String fileName = "不存在";
         String[] tempNames = new File(parentDir).list();
         for (String name: tempNames) {
             if (name.contains("组织发展")){

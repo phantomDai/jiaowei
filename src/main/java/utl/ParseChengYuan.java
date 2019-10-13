@@ -25,8 +25,27 @@ public class ParseChengYuan {
         //获取存在统战工作数据表的单位
         String parentDir = new GetYears().getPath() + separator +
                 this.year + separator + organization;
+        String name = getTargetFileName(parentDir);
+        String path = parentDir + separator + name;
+
+
+        File file = new File(path);
+        String[] tempArray = {"民革","民盟","民建","民进","农工","致公党","九三","台盟"};
+        if (!file.exists()){
+            for (int i = 0; i < 8; i++) {
+                Bin bin = new Bin();
+                bin.add(tempArray[i]);
+                for (int j = 1; j < Constant.ChengYuan; j++) {
+                    bin.add("");
+                }
+                dataList.add(bin);
+            }
+            updateData(dataList);
+            return;
+        }
+
         //获得操作的对象
-        Workbook wb = GetWorkBook.getWorkBook(this.year, this.organization, getTargetFileName(parentDir));
+        Workbook wb = GetWorkBook.getWorkBook(this.year, this.organization, name);
         //以上代码是为了获取每一个目标文件的操作对象，接下来读取每一个文件中的内容，存入文件中
         Sheet tempSheet = wb.getSheetAt(0);
         //获取统战工作表中需要统计的信息所在的行
@@ -215,7 +234,7 @@ public class ParseChengYuan {
      * @return 指定的文件的名字
      */
     private String getTargetFileName(String parentDir) {
-        String fileName = "";
+        String fileName = "不存在";
         String[] tempNames = new File(parentDir).list();
         for (String name: tempNames) {
             if (name.contains("民主党派")){

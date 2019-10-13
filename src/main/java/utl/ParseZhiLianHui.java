@@ -48,6 +48,18 @@ public class ParseZhiLianHui {
         fileName = getTargetFileName(parentDir);
 
         String filePath = parentDir + separator + fileName;
+
+        File file = new File(filePath);
+        if (!file.exists()){
+            Bin bin = new Bin();
+            for (int i = 0; i < Constant.ZhiLian; i++) {
+                bin.add("");
+            }
+            dataList.add(bin);
+            updateData(dataList);
+            return;
+        }
+
         //获得操作的对象
         Workbook wb = GetWorkBook.getWorkBook(filePath);
 
@@ -179,7 +191,7 @@ public class ParseZhiLianHui {
      * @return 指定的文件的名字
      */
     private String getTargetFileName(String parentDir) {
-        String fileName = "";
+        String fileName = "不存在";
         String[] tempNames = new File(parentDir).list();
         for (String name: tempNames) {
             if (name.contains("知联会")){

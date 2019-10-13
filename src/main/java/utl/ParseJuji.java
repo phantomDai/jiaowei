@@ -41,6 +41,19 @@ public class ParseJuji {
         fileName = getTargetFileName(parentDir);
 
         String filePath = parentDir + separator + fileName;
+
+        File file = new File(filePath);
+
+        if (!file.exists()){
+            Bin bin = new Bin();
+            for (int i = 0; i < Constant.ZhiLian; i++) {
+                bin.add("");
+            }
+            dataList.add(bin);
+            updateData(dataList);
+            return;
+        }
+
         //获得操作的对象
         Workbook wb = GetWorkBook.getWorkBook(filePath);
         //以上代码是为了获取每一个目标文件的操作对象，接下来读取每一个文件中的内容，存入文件中
@@ -52,6 +65,11 @@ public class ParseJuji {
             Row temp = tempSheet.getRow(i);
             if (temp.getCell(0).toString().equals("") || temp.getCell(1).toString().equals("")
                 || temp.getCell(2).toString().equals("")){
+                Bin bin = new Bin();
+                for (int j = 0; j < Constant.JUJI; j++) {
+                    bin.add("0");
+                }
+                dataList.add(bin);
                 break;
             }
             count++;
@@ -137,7 +155,7 @@ public class ParseJuji {
      * @return 指定的文件的名字
      */
     private String getTargetFileName(String parentDir) {
-        String fileName = "";
+        String fileName = "不存在";
         String[] tempNames = new File(parentDir).list();
         for (String name: tempNames) {
             if (name.contains("局级")){
